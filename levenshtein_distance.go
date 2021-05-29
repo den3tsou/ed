@@ -1,7 +1,6 @@
 package ed
 
 func LevenshteinDistance(a, b string) int {
-
 	if len(a) == 0 && len(b) != 0 {
 		return len(b)
 	}
