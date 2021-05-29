@@ -1,27 +1,38 @@
 package ed
 
 func LevenshteinDistance(a, b string) int {
-	if len(a) == 0 && len(b) != 0 {
-		return len(b)
+	al := len(a) + 1
+	bl := len(b) + 1
+	d := make([][]int, al)
+	for i := range d {
+		d[i] = make([]int, bl)
 	}
 
-	if len(a) != 0 && len(b) == 0 {
-		return len(a)
+	for i := 1; i < al; i++ {
+		d[i][0] = i
 	}
 
-	if a == b {
-		return 0
+	for j := 1; j < bl; j++ {
+		d[0][j] = j
 	}
 
-	if a[0] == b[0] {
-		return LevenshteinDistance(a[1:], b[1:])
+	var cost int
+	for j := 1; j < bl; j++ {
+		for i := 1; i < al; i++ {
+			if a[i-1] == b[j-1] {
+				cost = 0
+			} else {
+				cost = 1
+			}
+			d[i][j] = min(
+				d[i-1][j]+1,
+				d[i][j-1]+1,
+				d[i-1][j-1]+cost,
+			)
+		}
 	}
 
-	return 1 + min(
-		LevenshteinDistance(a[1:], b),
-		LevenshteinDistance(a, b[1:]),
-		LevenshteinDistance(a[1:], b[1:]),
-	)
+	return d[al-1][bl-1]
 }
 
 func min(a, b, c int) int {
